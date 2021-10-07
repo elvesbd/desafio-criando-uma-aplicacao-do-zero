@@ -33,6 +33,7 @@ export default function Post() {
       <Head>
         <title>Posts | spacetraveling</title>
       </Head>
+      <h1>Posts</h1>
     </>
   );
 }
