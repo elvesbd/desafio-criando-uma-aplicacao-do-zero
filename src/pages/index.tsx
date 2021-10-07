@@ -78,6 +78,8 @@ export default function Home() {
               </div>
             </div>
           </a>
+
+          <button type="button">Carregar mais posts</button>
         </div>
       </main>
     </>
