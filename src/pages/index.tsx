@@ -41,6 +41,19 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
   const [nextPage, setNextPage] = useState(postsPagination.next_page);
 
+  /*  const formatedPost = postsPagination.results.map(post => {
+    return {
+      ...post,
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd  LLL  yyy',
+        {
+          locale: ptBR,
+        }
+      ),
+    };
+  }); */
+
   async function handleGetNewPost(): Promise<void> {
     const loadMorePosts: ApiSearchResponse = await (
       await fetch(`${nextPage}`)
@@ -115,7 +128,24 @@ export const getStaticProps: GetStaticProps = async () => {
       pageSize: 1,
     }
   );
-  const posts = postsResponse.results;
+
+  const posts = postsResponse.results.map(post => {
+    return {
+      uid: post.uid,
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd  LLL  yyy',
+        {
+          locale: ptBR,
+        }
+      ),
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author,
+      },
+    };
+  });
 
   const postsPagination = {
     next_page: postsResponse.next_page,
