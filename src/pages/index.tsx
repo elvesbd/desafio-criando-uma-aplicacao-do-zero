@@ -55,7 +55,6 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     ).json();
 
     setPosts(oldPosts => [...oldPosts, ...loadMorePostsResponse.results]);
-    console.log(loadMorePostsResponse.results);
   }
 
   return (
