@@ -12,6 +12,7 @@ import { AiOutlineCalendar } from 'react-icons/ai';
 import { FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse';
+import Link from 'next/link';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
@@ -40,21 +41,13 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
   const [newPost, setNewPost] = useState(postsPagination.next_page);
 
-  async function handleGetNewPost() {
-    /* fetch(newPost)
-      .then(response => response.json()) // retorna uma promise
-      .then(results => {
-        console.log(results.results[0].data);
-      })
-      .catch(err => {
-        // trata se alguma das promises falhar
-        console.error('Failed retrieving information', err);
-      }); */
-    const loadMorePostsResponse: ApiSearchResponse = await (
+  async function handleGetNewPost(): Promise<void> {
+    const loadMorePosts: ApiSearchResponse = await (
       await fetch(postsPagination.next_page)
     ).json();
 
-    setPosts(oldPosts => [...oldPosts, ...loadMorePostsResponse.results]);
+    setNewPost(loadMorePosts.next_page);
+    setPosts([...posts, ...loadMorePosts.results]);
   }
 
   return (
@@ -66,20 +59,22 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       <main className={styles.container}>
         <div className={styles.posts}>
           {posts.map(post => (
-            <a key={post.uid} href="#">
-              <strong>{post.data.title}</strong>
-              <p>{post.data.subtitle}</p>
-              <div className={styles.info}>
-                <div className={styles.time}>
-                  <AiOutlineCalendar />
-                  <time>{post.first_publication_date}</time>
+            <Link key={post.uid} href={`/post/${post.uid}`}>
+              <a>
+                <strong>{post.data.title}</strong>
+                <p>{post.data.subtitle}</p>
+                <div className={styles.info}>
+                  <div className={styles.time}>
+                    <AiOutlineCalendar />
+                    <time>{post.first_publication_date}</time>
+                  </div>
+                  <div className={styles.user}>
+                    <FiUser />
+                    <span>{post.data.author}</span>
+                  </div>
                 </div>
-                <div className={styles.user}>
-                  <FiUser />
-                  <span>{post.data.author}</span>
-                </div>
-              </div>
-            </a>
+              </a>
+            </Link>
           ))}
           {newPost && (
             <button onClick={handleGetNewPost} type="button">
@@ -99,7 +94,6 @@ export const getStaticProps: GetStaticProps = async () => {
     {
       fetch: ['post.title', 'post.subtitle', 'post.author'],
       pageSize: 1,
-      page: 2,
     }
   );
   console.log(postsResponse);
