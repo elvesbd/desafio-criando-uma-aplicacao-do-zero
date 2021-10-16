@@ -39,15 +39,47 @@ interface HomeProps {
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
-  const [newPost, setNewPost] = useState(postsPagination.next_page);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
+
+  /*  const formatedPost = postsPagination.results.map(post => {
+    return {
+      ...post,
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd  LLL  yyy',
+        {
+          locale: ptBR,
+        }
+      ),
+    };
+  }); */
 
   async function handleGetNewPost(): Promise<void> {
     const loadMorePosts: ApiSearchResponse = await (
-      await fetch(postsPagination.next_page)
+      await fetch(`${nextPage}`)
     ).json();
 
-    setNewPost(loadMorePosts.next_page);
-    setPosts([...posts, ...loadMorePosts.results]);
+    setNextPage(loadMorePosts.next_page);
+
+    const newPost = loadMorePosts.results.map(post => {
+      return {
+        uid: post.uid,
+        first_publication_date: format(
+          new Date(post.first_publication_date),
+          'dd  LLL  yyy',
+          {
+            locale: ptBR,
+          }
+        ),
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      };
+    });
+
+    setPosts([...posts, ...newPost]);
   }
 
   return (
@@ -56,7 +88,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>Inicio | spacetraveling</title>
       </Head>
 
-      <main className={styles.container}>
+      <main className={commonStyles.container}>
         <div className={styles.posts}>
           {posts.map(post => (
             <Link key={post.uid} href={`/post/${post.uid}`}>
@@ -76,7 +108,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
               </a>
             </Link>
           ))}
-          {newPost && (
+          {!!nextPage && (
             <button onClick={handleGetNewPost} type="button">
               Carregar mais posts
             </button>
@@ -96,7 +128,7 @@ export const getStaticProps: GetStaticProps = async () => {
       pageSize: 1,
     }
   );
-  console.log(postsResponse);
+
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
@@ -114,6 +146,7 @@ export const getStaticProps: GetStaticProps = async () => {
       },
     };
   });
+
   const postsPagination = {
     next_page: postsResponse.next_page,
     results: posts,

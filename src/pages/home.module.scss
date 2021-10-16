@@ -1,12 +1,7 @@
-.container {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
 .posts {
   max-width: 721px;
   margin: 5rem auto 0;
+  margin-bottom: 5rem;
 
   a {
     display: block;
@@ -43,27 +38,27 @@
     font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.3625rem;
-    margin: 4rem 0 5rem 0;
-  }
-}
-
-.info {
-  display: flex;
-  align-items: center;
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  gap: 1rem;
-  color: var(--info);
-
-  .time {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    margin: 4rem 0 0 0;
   }
 
-  .user {
+  .info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    gap: 1rem;
+    color: var(--info);
+
+    .time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 }
