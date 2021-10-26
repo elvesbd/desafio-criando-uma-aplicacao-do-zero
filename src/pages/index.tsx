@@ -89,10 +89,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       </Head>
 
       <main className={commonStyles.container}>
-        <div className={styles.posts}>
+        <div className={commonStyles.posts}>
           {posts.map(post => (
             <Link key={post.uid} href={`/post/${post.uid}`}>
-              <a>
+              <a className={styles.link}>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
                 <div className={styles.info}>
