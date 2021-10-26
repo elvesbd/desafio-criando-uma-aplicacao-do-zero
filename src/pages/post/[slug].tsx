@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { Head } from 'next/document';
+import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
 import { Header } from '../../components/Header';
@@ -36,19 +36,17 @@ export default function Post(): JSX.Element {
       <Head>
         <title>Posts | spacetraveling</title>
       </Head>
-      <Header />
-      hello world
-      {/* <img
+      <img
         src="/images/banner.png"
         alt="banner post"
         className={styles.banner}
       />
 
-      <main>
-        <div>
-          <div>
+      <main className={commonStyles.container}>
+        <div className={commonStyles.posts}>
+          <div className={styles.post}>
             <h1>Criando um app CRA do zero</h1>
-            <div>
+            <div className={styles.infos}>
               <div>
                 <FiCalendar />
                 15 mar 2021
@@ -62,7 +60,7 @@ export default function Post(): JSX.Element {
               </div>
             </div>
           </div>
-          <article>
+          <article className={styles.article}>
             <h2>Proin et varius</h2>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa
@@ -72,7 +70,7 @@ export default function Post(): JSX.Element {
             </p>
           </article>
         </div>
-      </main> */}
+      </main>
     </>
   );
 }
