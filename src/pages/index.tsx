@@ -4,10 +4,7 @@ import Prismic from '@prismicio/client';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
-import { RichText } from 'prismic-dom';
-
 import Head from 'next/head';
-import { title } from 'process';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { FiUser } from 'react-icons/fi';
 import { useState } from 'react';
@@ -17,6 +14,7 @@ import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import Header from '../components/Header';
 
 interface Post {
   uid?: string;
@@ -38,21 +36,21 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
-  const [posts, setPosts] = useState<Post[]>(postsPagination.results);
-  const [nextPage, setNextPage] = useState(postsPagination.next_page);
-
-  /*  const formatedPost = postsPagination.results.map(post => {
+  const formattedPost = postsPagination.results.map(post => {
     return {
       ...post,
       first_publication_date: format(
         new Date(post.first_publication_date),
-        'dd  LLL  yyy',
+        'dd MMM yyyy',
         {
           locale: ptBR,
         }
       ),
     };
-  }); */
+  });
+
+  const [posts, setPosts] = useState<Post[]>(formattedPost);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
 
   async function handleGetNewPost(): Promise<void> {
     const loadMorePosts: ApiSearchResponse = await (
@@ -64,13 +62,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     const newPost = loadMorePosts.results.map(post => {
       return {
         uid: post.uid,
-        first_publication_date: format(
-          new Date(post.first_publication_date),
-          'dd  LLL  yyy',
-          {
-            locale: ptBR,
-          }
-        ),
+        first_publication_date: post.first_publication_date,
         data: {
           title: post.data.title,
           subtitle: post.data.subtitle,
@@ -87,6 +79,8 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
       <Head>
         <title>Inicio | spacetraveling</title>
       </Head>
+
+      <Header />
 
       <main className={commonStyles.container}>
         <div className={commonStyles.posts}>
@@ -132,13 +126,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: format(
-        new Date(post.first_publication_date),
-        'dd  LLL  yyy',
-        {
-          locale: ptBR,
-        }
-      ),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,

@@ -8,4 +8,18 @@
   max-width: 721px;
   margin: 5rem auto 0;
   margin-bottom: 5rem;
+
+  a + a {
+    margin-top: 2rem;
+  }
+
+  button {
+    background: none;
+    border: none;
+    margin-top: 64px;
+    color: var(--highlight);
+    font-weight: 600;
+    font-size: 18px;
+    line: height 22px;
+  }
 }

@@ -38,5 +38,15 @@
     font-size: 18px;
     line-height: 140%;
     color: var(--body);
+    margin: 1.8rem 0;
+  }
+
+  a {
+    color: var(--highlight);
+  }
+
+  strong {
+    font-weight: 700;
+    color: var(--body);
   }
 }
