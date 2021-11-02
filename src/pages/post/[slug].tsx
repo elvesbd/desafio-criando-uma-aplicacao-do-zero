@@ -3,12 +3,11 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
-import { title } from 'process';
 import { RichText } from 'prismic-dom';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Header } from '../../components/Header';
+import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -38,6 +37,7 @@ interface PostProps {
 
 export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
+
   if (router.isFallback) {
     return <h1>Carregando...</h1>;
   }
@@ -62,10 +62,12 @@ export default function Post({ post }: PostProps): JSX.Element {
   return (
     <>
       <Head>
-        <title>Posts | spacetraveling</title>
+        <title>{post.data.title} | spacetraveling</title>
       </Head>
+
+      <Header />
       <img
-        src="/images/banner.png"
+        src={post.data.banner.url}
         alt="banner post"
         className={styles.banner}
       />
@@ -109,12 +111,24 @@ export default function Post({ post }: PostProps): JSX.Element {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient();
+  const posts = await prismic.query([
+    Prismic.predicates.at('document.type', 'posts'),
+  ]);
+
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
+
   return {
-    paths: [],
+    paths,
     fallback: true,
   };
 };
-// /post/[slug]
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient();
@@ -141,7 +155,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       }),
     },
   };
-  console.log(`${JSON.stringify(post.data.content.body)}`);
+  // console.log(`${JSON.stringify(post.data.content.body)}`);
   return {
     props: {
       post,
